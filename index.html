@@ -100,9 +100,9 @@ function ageTxt(){const d=Math.floor((Date.now()-new Date(S.baby.birth))/864e5);
 function applyTheme(){const r=document.documentElement;const th=S.theme||(TG&&TG.colorScheme)||'';th?r.setAttribute('data-theme',th):r.removeAttribute('data-theme')}
 function setup(){
 return `<div class="card hero"><h1>Привет, мамочка 🌸</h1><p>Давайте познакомимся с малышом. Мы подскажем, когда ему пора спать и есть. Все записи хранятся только на вашем устройстве.</p>
-<input id="nm" placeholder="Имя малыша"><label class="sub">Дата рождения</label><input id="bd" type="date">
+<input id="nm" placeholder="Имя малыша"><label class="sub">Дата рождения</label><div class="row"><select id="bdd" aria-label="День">${[...Array(31)].map((_,i)=>`<option${i+1===new Date().getDate()?' selected':''}>${i+1}</option>`).join('')}</select><select id="bdm" aria-label="Месяц">${['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'].map((m,i)=>`<option value="${i}"${i===new Date().getMonth()?' selected':''}>${m}</option>`).join('')}</select><select id="bdy" aria-label="Год">${[0,1,2,3].map(k=>`<option>${new Date().getFullYear()-k}</option>`).join('')}</select></div>
 <button class="b-acc" style="width:100%" onclick="startBaby()">Начать</button></div>`}
-function startBaby(){const n=nm.value.trim(),b=bd.value;if(!n||!b){alert('Укажите имя и дату рождения');return}S.baby={name:n,birth:b};save();render()}
+function startBaby(){const n=nm.value.trim(),d=new Date(+bdy.value,+bdm.value,+bdd.value);if(!n){alert('Укажите имя малыша');return}if(d.getDate()!==+bdd.value||d>new Date()){alert('Проверьте дату рождения');return}const b=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');S.baby={name:n,birth:b};save();render()}
 function add(type,d){const a=S.ev.find(e=>e.type==='sleep'&&!e.end);if(type==='sleep'){if(a)a.end=Date.now();else S.ev.push({t:Date.now(),type,id:Date.now()})}else S.ev.push({t:Date.now(),type,d,id:Date.now()});save();render()}
 function del(id){S.ev=S.ev.filter(e=>e.id!==id);save();render()}
 function today(){
